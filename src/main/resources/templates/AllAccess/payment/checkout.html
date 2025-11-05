@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiement de la commande</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ✅ Style du bloc de paiement immersif */
+        .payment-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 5px #00ff99;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .credit-card-number {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .credit-card-footer {
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ En-tête -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- ✅ Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/olympe.jpg'); background-size: cover; background-position: center;">
+    <div class="container bg-dark bg-opacity-75 text-light p-5 rounded-4 shadow-lg" style="max-width: 850px;">
+
+        <h1 class="text-center mb-4 fw-bold">💳 Paiement de votre commande</h1>
+
+        <p class="text-center fs-5 mb-4">Vérifiez votre commande et entrez vos informations de paiement.</p>
+
+        <!-- ✅ Tableau du panier -->
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+                <thead class="table-light text-dark">
+                <tr>
+                    <th>Session</th>
+                    <th class="text-center">Quantité</th>
+                    <th class="text-end">Prix total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart.items}">
+                    <td th:text="${item.session.name}">Athlétisme</td>
+                    <td class="text-center" th:text="${item.quantity}">2</td>
+                    <td class="text-end"
+                        th:text="${#numbers.formatDecimal(item.session.price * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' €'">100 €</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ✅ Total -->
+        <div class="text-end mt-4">
+            <h3>Total à payer :
+                <span class="text-success fw-bold"
+                      th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + ' €'">120 €</span>
+            </h3>
+        </div>
+
+        <!-- ✅ Bloc de paiement immersif -->
+        <div class="payment-box mt-5">
+            <h4 class="text-center mb-4">Informations de paiement</h4>
+
+            <!-- Exemple de carte visuelle -->
+            <div class="credit-card mx-auto mb-4" style="max-width: 400px;">
+                <div class="credit-card-number">**** **** **** 1234</div>
+                <div class="credit-card-footer">
+                    <span>MM/AA : 12/28</span>
+                    <span>VISA</span>
+                </div>
+            </div>
+
+            <form>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Titulaire de la carte</label>
+                        <input type="text" class="form-control" placeholder="Jean Dupont" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Numéro de carte</label>
+                        <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Date d’expiration</label>
+                        <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Cryptogramme (CVV)</label>
+                        <input type="password" class="form-control" placeholder="***" maxlength="3" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Adresse de facturation</label>
+                        <input type="text" class="form-control" placeholder="12 rue des Jeux, 75000 Paris" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- ✅ Bouton de validation -->
+        <form th:action="@{/all/payment/confirm}" method="post" class="text-center mt-5">
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                ✅ Confirmer le paiement
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a th:href="@{/all/order}" class="text-light text-decoration-underline">↩ Retour à la commande</a>
+        </div>
+    </div>
+</section>
+
+<!-- ✅ Footer -->
+<footer id="contact" class="bg-dark text-center text-light py-4">
+    <p class="mb-0">
+        2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

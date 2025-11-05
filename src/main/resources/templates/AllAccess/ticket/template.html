@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Ticket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+        .ticket {
+            border: 2px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 500px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .details {
+            margin: 15px 0;
+        }
+        .qr {
+            text-align: center;
+            margin-top: 20px;
+        }
+        img {
+            width: 180px;
+        }
+    </style>
+</head>
+<body>
+<div class="ticket">
+    <h2 th:text="${orderItem.session.event.name}">Nom de l'événement</h2>
+    <div class="details">
+        <p><strong>Date :</strong> <span th:text="${orderItem.session.name}">2025-01-01</span></p>
+        <strong th:text="${#temporals.format(orderItem.session.startTime, 'dd MMMM yyyy à HH:mm')}"></strong>
+        <p><strong>Lieu :</strong> <span th:text="${orderItem.session.event.location}">Paris</span></p>
+    </div>
+    <div class="qr">
+        <img th:src="@{${qrPath}}" alt="QR Code"/>
+    </div>
+</div>
+</body>
+</html>

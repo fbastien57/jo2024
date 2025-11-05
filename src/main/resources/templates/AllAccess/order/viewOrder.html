@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Résumé de la commande</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ✅ En-tête -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- ✅ Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/olympe.jpg'); background-size: cover; background-position: center;">
+    <div class="container bg-dark bg-opacity-75 text-light p-5 rounded-4 shadow-lg" style="max-width: 1000px;">
+
+        <h1 class="text-center mb-4 fw-bold">🛒 Résumé de votre commande</h1>
+
+        <p class="text-center fs-5 mb-4">Vérifiez le contenu de votre commande avant de procéder au paiement.</p>
+
+        <!-- ✅ Tableau récapitulatif -->
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+                <thead class="table-light text-dark">
+                <tr>
+                    <th>Événement</th>
+                    <th>Session</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th class="text-center">Quantité</th>
+                    <th class="text-end">Prix unitaire</th>
+                    <th class="text-end">Sous-total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart.items}">
+                    <td th:text="${item.session.event.name}">Athlétisme</td>
+                    <td th:text="${item.session.name}">Finale 100m</td>
+                    <td th:text="${#temporals.format(item.session.startTime, 'dd/MM/yyyy à HH:mm')}">20/07/2025 à 10:00</td>
+                    <td th:text="${#temporals.format(item.session.endTime, 'dd/MM/yyyy à HH:mm')}">20/07/2025 à 12:00</td>
+                    <td class="text-center" th:text="${item.quantity}">2</td>
+                    <td class="text-end" th:text="${#numbers.formatDecimal(item.session.price, 1, 'COMMA', 2, 'POINT')} + ' €'">49.00 €</td>
+                    <td class="text-end text-warning fw-bold"
+                        th:text="${#numbers.formatDecimal(item.session.price * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' €'">98.00 €</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ✅ Total général -->
+        <div class="text-end mt-4">
+            <h3>Total de la commande :
+                <span class="text-success fw-bold"
+                      th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + ' €'">120 €</span>
+            </h3>
+        </div>
+
+        <!-- ✅ Actions -->
+        <div class="d-flex justify-content-center gap-3">
+            <a th:href="@{/all/cart}" class="btn btn-outline-light btn-lg px-4">
+                🔄 Modifier ma commande
+            </a>
+            <a th:href="@{/all/payment}" class="btn btn-success btn-lg px-4">
+                💳 Payer ma commande
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- ✅ Footer -->
+<footer id="contact" class="bg-dark text-center text-light py-4">
+    <p class="mb-0">
+        2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Créer un événement</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<!-- Header commun -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/paris2024.jpg'); background-size: cover; background-position: center;">
+    <div class="container bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg" style="max-width: 700px;">
+        <h1 class="text-center mb-4 fw-bold">🏟️ Créer un événement</h1>
+
+        <!-- Formulaire -->
+        <form th:action="@{/event/create}" th:object="${event}" method="post" enctype="multipart/form-data">
+
+            <!-- Nom -->
+            <div class="mb-4">
+                <label for="name" class="form-label fw-semibold">Titre</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control bg-dark text-light border-light"
+                       placeholder="Ex : Marathon Paris 2025">
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger mt-1"></div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label for="description" class="form-label fw-semibold">Description</label>
+                <input type="text" id="description" th:field="*{description}" class="form-control bg-dark text-light border-light"
+                       placeholder="Ex : Course de 42 km dans Paris">
+                <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger mt-1"></div>
+            </div>
+
+            <!-- Lieu -->
+            <div class="mb-4">
+                <label for="location" class="form-label fw-semibold">Lieu</label>
+                <input type="text" id="location" th:field="*{location}" class="form-control bg-dark text-light border-light"
+                       placeholder="Ex : Stade de France" required>
+                <div th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-danger mt-1"></div>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-4">
+                <label for="picture" class="form-label fw-semibold">Image</label>
+                <input type="file" name="imageFile" class="form-control bg-dark text-light border-light" id="picture" accept="image/*" required>
+            </div>
+
+            <!-- Bouton d’envoi -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold">✅ Créer l'événement</button>
+            </div>
+
+        </form>
+
+        <!-- Retour -->
+        <div class="text-center mt-4">
+            <a th:href="@{/event}" class="btn btn-outline-light btn-lg px-4">⬅️ Retour</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-center text-light py-4 mt-5">
+    <p class="mb-0">
+        2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

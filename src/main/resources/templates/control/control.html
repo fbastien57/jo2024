@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrôle des billets</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f9fafb;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #reader {
+            width: 320px;
+            margin: 20px auto;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .valid { color: green; }
+        .used { color: orange; }
+        .invalid { color: red; }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>🎫 Contrôle des billets</h1>
+<p>Scannez un billet pour vérifier sa validité</p>
+
+<div id="reader"></div>
+<div id="result">Aucun billet scanné</div>
+<button onclick="restartScanner()">🔄 Recommencer le scan</button>
+
+<script>
+    const resultContainer = document.getElementById('result');
+    let html5QrCode;
+
+    async function startScanner() {
+        html5QrCode = new Html5Qrcode("reader");
+        try {
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: 250 },
+                onScanSuccess
+            );
+        } catch (err) {
+            resultContainer.textContent = "⚠️ Impossible d'accéder à la caméra : " + err;
+            resultContainer.className = "invalid";
+        }
+    }
+
+    async function onScanSuccess(decodedText) {
+        await html5QrCode.stop();
+        resultContainer.textContent = "Vérification en cours...";
+        resultContainer.className = "";
+
+        fetch(`/api/ticket/verify?qrData=${encodeURIComponent(decodedText)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "VALID") {
+                    resultContainer.innerHTML = `✅ Billet valide<br>Utilisateur : ${data.user}<br>Session : ${data.session}`;
+                    resultContainer.className = "valid";
+                } else if (data.status === "ALREADY_USED") {
+                    resultContainer.innerHTML = `⚠️ Billet déjà utilisé !`;
+                    resultContainer.className = "used";
+                } else {
+                    resultContainer.innerHTML = `❌ Billet invalide !`;
+                    resultContainer.className = "invalid";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                resultContainer.textContent = "Erreur lors de la vérification.";
+                resultContainer.className = "invalid";
+            });
+    }
+
+    function restartScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(startScanner);
+        } else {
+            startScanner();
+        }
+        resultContainer.textContent = "Scanner prêt";
+        resultContainer.className = "";
+    }
+
+    startScanner();
+</script>
+</body>
+</html>

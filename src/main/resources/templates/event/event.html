@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des évènements</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Images uniformes dans les cartes */
+        .card-img-top {
+            width: 100%;
+            height: 200px; /* même hauteur pour toutes les images */
+            object-fit: cover; /* garde les proportions */
+            border-top-left-radius: .75rem;
+            border-top-right-radius: .75rem;
+            transition: transform 0.3s;
+        }
+        .card:hover .card-img-top {
+            transform: scale(1.05); /* effet zoom au hover */
+        }
+
+        /* Modernisation des cartes */
+        .card {
+            border-radius: .75rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        }
+
+        /* Boutons avec icônes et transitions */
+        .card-footer .btn {
+            transition: transform 0.2s;
+        }
+        .card-footer .btn:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body class="bg-dark text-light">
+
+<!-- Menu de navigation -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<section class="py-5" style="min-height: 100vh;
+                             background-image: url('/img/paris2024.jpg');
+                             background-size: cover;
+                             background-position: center;">
+    <div class="container bg-dark bg-opacity-75 p-4 rounded-4 shadow-lg">
+
+        <h2 class="text-center mb-5 fw-bold">🏟️ Gestion des évènements</h2>
+
+        <div class="text-center mb-4">
+            <a th:href="@{/event/new}" class="btn btn-success btn-lg fw-bold">➕ Ajouter un évènement</a>
+        </div>
+
+        <!-- Message si aucun événement -->
+        <div th:if="${#lists.isEmpty(events)}" class="text-center text-warning mb-4">
+            <p>Aucun évènement disponible.</p>
+        </div>
+
+        <!-- Liste des événements avec cartes -->
+        <div class="row g-4">
+            <div class="col-md-4 mt-5 mb-5" th:each="event : ${events}">
+                <div class="card h-100 shadow-lg bg-white text-dark">
+
+                    <!-- Image -->
+                    <img th:src="@{/uploads/{filename}(filename=${event.picture})}" class="card-img-top" alt="Image de l'événement">
+
+                    <!-- Body -->
+                    <div class="card-body text-center">
+                        <h3 class="card-title fw-bold mb-3" th:text="${event.name}">Nom de l'évènement</h3>
+                        <p class="card-text" th:text="${event.description}">Description de l'évènement</p>
+                        <p class="card-text text-muted" th:text="${event.location}">Lieu de l'évènement</p>
+                    </div>
+
+                    <!-- Boutons verticaux dans la carte -->
+                    <div class="card-footer bg-white">
+                        <div class="row g-2">
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{'/event/' + ${event.id}}"
+                                   class="btn btn-primary d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">📅</span>
+                                    <span>Sessions</span>
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{/event/edit/{id}(id=${event.id})}"
+                                   class="btn btn-warning d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">✏️</span>
+                                    <span>Modifier</span>
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{/event/delete/{id}(id=${event.id})}"
+                                   class="btn btn-danger d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">🗑️</span>
+                                    <span>Supprimer</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a th:href="@{/}" class="btn btn-outline-light btn-lg fw-bold">⬅️ Menu principal</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-center text-light py-4 mt-5">
+    <p>2025 Jeux Olympiques Paris | Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

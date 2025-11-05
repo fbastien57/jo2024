@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Mon Panier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<!-- ✅ Menu de navigation -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- ✅ Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/olympe.jpg'); background-size: cover; background-position: center;">
+    <div class="container bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg" style="max-width: 1100px;">
+
+        <h1 class="text-center mb-4 fw-bold">🛍️ Mon Panier</h1>
+
+        <!-- ✅ Total global -->
+        <div class="text-center mb-5 fs-4">
+            Total du panier :
+            <span id="cart-total" class="text-warning fw-bold"
+                  th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</span>
+        </div>
+
+        <!-- ✅ Tableau des articles -->
+        <div th:if="${!#lists.isEmpty(cart.items)}" class="table-responsive">
+            <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+                <thead class="table-light text-dark">
+                <tr>
+                    <th>Événement</th>
+                    <th>Session</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th class="text-center">Quantité</th>
+                    <th class="text-end">Prix unitaire</th>
+                    <th class="text-end">Sous-total</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart.items}" th:data-session-id="${item.session.id}">
+                    <td th:text="${item.session.event.name}">Athlétisme</td>
+                    <td th:text="${item.session.name}">Finale 100m</td>
+                    <td th:text="${#temporals.format(item.session.startTime, 'dd/MM/yyyy à HH:mm')}">20/07/2025 à 10:00</td>
+                    <td th:text="${#temporals.format(item.session.endTime, 'dd/MM/yyyy à HH:mm')}">20/07/2025 à 12:00</td>
+
+                    <td class="text-center">
+                        <input type="number" min="1" class="form-control text-center quantity-input"
+                               th:value="${item.quantity}" style="max-width: 80px;">
+                    </td>
+                    <td class="text-end" th:text="${#numbers.formatDecimal(item.session.price, 1, 'COMMA', 2, 'POINT')} + ' €'">49,00 €</td>
+                    <td class="text-end subtotal text-warning fw-bold"
+                        th:text="${#numbers.formatDecimal(item.session.price * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' €'">98,00 €</td>
+
+                    <!-- Actions -->
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-light update-btn me-1">↻</button>
+                        <button class="btn btn-sm btn-danger delete-btn">🗑️</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ✅ Panier vide -->
+        <div th:if="${#lists.isEmpty(cart.items)}" class="text-center mt-5">
+            <div class="alert alert-info fs-5 bg-opacity-75">
+                Votre panier est vide 😢
+            </div>
+            <a class="btn btn-success btn-lg px-4 mt-3" th:href="@{/}">
+                🎟️ Voir les prochains événements
+            </a>
+        </div>
+
+        <!-- ✅ Actions si connecté -->
+        <div th:if="${#authorization.expression('isAuthenticated()') and !#lists.isEmpty(cart.items)}"
+             class="d-flex justify-content-center mt-5">
+            <a class="btn btn-success btn-lg px-5" th:href="@{/all/order}">
+                ✅ Valider le panier
+            </a>
+        </div>
+
+        <!-- ✅ Actions si non connecté -->
+        <div th:if="${#authorization.expression('!isAuthenticated()') and !#lists.isEmpty(cart.items)}"
+             class="d-flex justify-content-center mt-5">
+            <a class="btn btn-primary btn-lg px-5" th:href="@{/login}">
+                🔐 Connectez-vous pour finaliser votre commande
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ✅ Footer -->
+<footer id="contact" class="bg-dark text-center text-light py-4 mt-5">
+    <p class="mb-0">
+        &copy; 2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">
+            contact@paris2025.com
+        </a>
+    </p>
+</footer>
+
+<!-- ✅ JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/cartUpdate.js}"></script>
+
+</body>
+</html>

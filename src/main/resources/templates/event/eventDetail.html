@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gestion des sessions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<!-- Menu de navigation -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- Section principale -->
+<section class="py-5" style="min-height: 100vh;
+                             background-image: url('/img/football.jpg');
+                             background-size: cover;
+                             background-position: center;">
+    <div class="container bg-dark bg-opacity-75 p-4 rounded-4 shadow-lg">
+
+        <h2 class="text-center mb-5 fw-bold">🏟️ Gestion des sessions</h2>
+
+        <div class="text-center mb-4">
+            <a th:href="@{/event/{id}/sessions/new(id=${event.id})}" class="btn btn-success btn-lg fw-bold">➕ Ajouter une session</a>
+        </div>
+
+        <!-- Message si aucune session -->
+        <div th:if="${#lists.isEmpty(sessions)}" class="text-center text-warning mb-4">
+            <p>Aucune session disponible pour cet événement.</p>
+        </div>
+
+        <!-- Liste des sessions avec cartes -->
+        <div class="row g-4">
+            <div class="col-md-4 mt-5 mb-5" th:each="sess : ${sessions}">
+                <div class="card h-100 shadow-lg bg-white text-dark">
+
+                    <!-- Header -->
+                    <h3 class="card-header fw-bold text-center text-decoration-underline" th:text="${sess.name}"></h3>
+
+                    <!-- Body -->
+                    <div class="card-body">
+
+                        <div class="row justify-content-center p-2">
+                            <div class="col text-center">
+                                <strong class="text-decoration-underline">Début :</strong>
+                                <p th:text="${#temporals.format(sess.startTime, 'dd MMMM yyyy à HH:mm')}"></p>
+                            </div>
+                            <div class="col text-center">
+                                <strong class="text-decoration-underline">Fin :</strong>
+                                <p th:text="${#temporals.format(sess.endTime, 'dd MMMM yyyy à HH:mm')}"></p>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center p-2">
+                            <div class="col text-center">
+                                <strong class="text-decoration-underline">Total des places :</strong>
+                                <p th:text="${sess.totalCapacity} + ' places'"></p>
+                            </div>
+                            <div class="col text-center">
+                                <strong class="text-decoration-underline">Places restantes :</strong>
+                                <p th:text="${sess.remainingCapacity} + ' places'"></p>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center p-2">
+                            <div class="col text-center">
+                                <strong class="text-decoration-underline">Prix :</strong>
+                                <p th:text="${sess.price} + ' euros'"></p>
+                            </div>
+                        </div>
+
+                        <!-- Boutons verticaux dans la carte -->
+                        <div class="row mt-3 g-2">
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{/event/{eventId}/session/{sessionId}(eventId=${event.id}, sessionId=${sess.id})}"
+                                   class="btn btn-primary d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">🎫</span>
+                                    <span>Offres</span>
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{/event/{eventId}/session/edit/{id}(eventId=${event.id}, id=${sess.id})}"
+                                   class="btn btn-warning d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">✏️</span>
+                                    <span>Modifier</span>
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-4 d-flex justify-content-center">
+                                <a th:href="@{/session/delete/{id}(id=${sess.id})}"
+                                   class="btn btn-danger d-flex flex-column align-items-center w-100 py-2">
+                                    <span style="font-size: 1.5rem;">🗑️</span>
+                                    <span>Supprimer</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a th:href="@{/event}" class="btn btn-outline-light btn-lg fw-bold">⬅️ Gestion des événements</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-center text-light py-4 mt-5">
+    <p>2025 Jeux Olympiques Paris | Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

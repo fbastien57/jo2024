@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Mettre à jour une offre</title>
+
+    <!-- ✅ Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<!-- ✅ Menu de navigation -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- ✅ Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/olympe.jpg'); background-size: cover; background-position: center;">
+    <div class="container bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg" style="max-width: 700px;">
+        <h1 class="text-center mb-4 fw-bold">✏️ Mettre à jour une offre</h1>
+
+        <!-- ✅ Formulaire de mise à jour -->
+        <form th:action="@{/offer/update/{id}(id=${id})}" th:object="${offer}" method="post">
+
+            <!-- Nom de l'offre -->
+            <div class="mb-4">
+                <label for="name" class="form-label fw-semibold">Nom de l'offre</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control bg-dark text-light border-light"
+                       placeholder="Ex : Offre VIP Athlétisme">
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger mt-1"></div>
+            </div>
+
+            <!-- Nombre de billets -->
+            <div class="mb-4">
+                <label for="nbrBillet" class="form-label fw-semibold">Nombre de billets</label>
+                <input type="number" id="nbrBillet" th:field="*{nbrBillet}" class="form-control bg-dark text-light border-light"
+                       min="1" placeholder="Ex : 10">
+                <div th:if="${#fields.hasErrors('nbrBillet')}" th:errors="*{nbrBillet}" class="text-danger mt-1"></div>
+            </div>
+
+            <!-- Champs cachés -->
+            <input type="hidden" name="eventId" th:value="${eventId}">
+            <input type="hidden" name="sessionId" th:value="${sessionId}">
+
+            <!-- Boutons -->
+            <div class="text-center mt-5 d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-warning btn-lg px-5 fw-bold">
+                    🔄 Mettre à jour
+                </button>
+                <a th:href="@{/event/{eventId}/session/{sessionId}(eventId=${eventId}, sessionId=${sessionId})}" class="btn btn-outline-light btn-lg px-4">
+                    ⬅️ Retour
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ✅ Footer -->
+<footer class="bg-dark text-center text-light py-4 mt-5">
+    <p class="mb-0">
+        2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">
+            contact@paris2025.com
+        </a>
+    </p>
+</footer>
+
+<!-- ✅ JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiement confirmé</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ✅ En-tête du site -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<!-- ✅ Section principale -->
+<section class="d-flex justify-content-center align-items-center"
+         style="min-height: 100vh; background-image: url('/img/olympe.jpg'); background-size: cover; background-position: center;">
+    <div class="container text-center text-light bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg">
+
+        <h1 class="mb-4 fw-bold">🎉 Merci pour votre achat !</h1>
+
+        <p class="fs-5 mb-3">
+            Votre commande a été validée avec succès.
+        </p>
+
+        <hr class="border-light my-4">
+
+        <p class="fs-4">
+            <strong>Numéro de commande :</strong>
+            <span class="text-warning" th:text="${order.id}">123</span>
+        </p>
+
+        <p class="fs-4">
+            <strong>Montant payé :</strong>
+            <span class="text-success"
+                  th:text="${#numbers.formatDecimal(payment.price, 1, 'COMMA', 2, 'POINT')}">49.99</span> €
+        </p>
+
+        <p class="fs-5">
+            <strong>Date du paiement :</strong>
+            <span th:text="${#temporals.format(payment.payedAt, 'dd/MM/yyyy à HH:mm')}">20/10/2025 à 19:58</span>
+        </p>
+
+        <hr class="border-light my-4">
+
+        <a th:href="@{/}" class="btn btn-outline-light btn-lg mt-3">
+            🏠 Retourner à l'accueil
+        </a>
+
+    </div>
+</section>
+
+<!-- ✅ Pied de page -->
+<footer id="contact" class="bg-dark text-center text-light py-4">
+    <p class="mb-0">
+        2025 Jeux Olympiques Paris |
+        Contactez-nous :
+        <a href="mailto:contact@paris2025.com" class="text-light text-decoration-underline">contact@paris2025.com</a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

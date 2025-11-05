@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jeux Olympiques Paris 2024</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<!-- Menu de navigation -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<section class="d-flex justify-content-center align-items-center text-light text-center" style="background-image: url('/img/paris2024.jpg'); height: 100vh; background-size: cover; background-position: center;">
+    <div>
+        <h1 class="display-4  fw-medium">Sessions disponibles de l'evenement</h1>
+    </div>
+</section>
+<section>
+    <div class="container-flex" style="height: 5px ;width: auto; background-color: #333333; opacity: 80"></div>
+</section>
+<section class="d-flex justify-content-center align-items-center text-light text-center"  style="background-image: url('/img/olympe.jpg');background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4 mt-5 mb-5" th:each="sess : ${sessions}">
+                <div class="card text-center shadow-lg">
+                    <h3 class="card-header shadow-lg fw-bold text-decoration-underline" th:text="${sess.name}"></h3>
+                    <div class="card-body">
+                        <div class="row justify-content-center p-2">
+                            <div class="col">
+                                <strong class="text-decoration-underline">debut : </strong>
+                                <p th:text="${#temporals.format(sess.startTime, 'dd MMMM yyyy à HH:mm')}"></p>
+                            </div>
+                            <div class="col">
+                                <strong class="text-decoration-underline">fin : </strong>
+                                <p th:text="${#temporals.format(sess.endTime, 'dd MMMM yyyy à HH:mm')}"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center p-2">
+                            <div class="col">
+                                <strong class="text-decoration-underline">total des places</strong>
+                                <p th:text="${sess.totalCapacity} + ' places'"></p>
+                            </div>
+                            <div class="col">
+                                <strong class="text-decoration-underline">Places restantes</strong>
+                                <p th:text="${sess.remainingCapacity} + ' places'"></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center p-2">
+                            <div class="col">
+                                <strong class="text-decoration-underline">Prix</strong>
+                                <p th:text="${sess.price} + ' euros'"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="justify-content-center mb-1">
+                        <a  th:href="@{/all/event/{eventId}/session/{sessionId}(eventId=${event.id} , sessionId=${sess.id})}" class="btn btn-primary col-6">Reserver un billet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bouton retour au menu principal -->
+        <div class="text-center p-4">
+            <a th:href="@{/}" class="btn btn-outline-light btn-lg fw-bold">⬅️ Retour au menu principal</a>
+        </div>
+    </div>
+</section>
+<footer id="contact" class="bg-dark text-center text-light py-4">
+    <p>&copy; 2024 Jeux Olympiques Paris | Contactez-nous : <a href="mailto:contact@paris2024.com" class="text-light">contact@paris2024.com</a></p>
+</footer>
+
+<!-- Bootstrap JS et dépendances -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
